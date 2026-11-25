@@ -17,7 +17,7 @@ const label = id => { const s = sceneById[id]; return s ? `${s.title}${s.detail 
 export default function SessionApp({slug}) {
   const [data, setData] = useState(null), [error, setError] = useState('');
   const [sceneId, setSceneId] = useState(() => (typeof location !== 'undefined' && sceneById[location.hash.slice(1)]) ? location.hash.slice(1) : 'sala');
-  const [panel, setPanel] = useState('materiais'), [focus, setFocus] = useState(null), [open, setOpen] = useState(null), [colors, setColors] = useState({});
+  const [panel, setPanel] = useState(() => typeof innerWidth !== 'undefined' && innerWidth < 760 ? null : 'materiais'), [focus, setFocus] = useState(null), [open, setOpen] = useState(null), [colors, setColors] = useState({});
   const [frame, setFrame] = useState({canvas: null, v: 0}), [busy, setBusy] = useState(true), [msg, setMsg] = useState('');
   const canvasRef = useRef(null);
 
