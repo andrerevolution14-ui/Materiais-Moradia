@@ -6,7 +6,7 @@ const eur=n=>n==null?'—':n.toLocaleString('pt-PT',{style:'currency',currency:'
 
 export default function Admin(){
   const [auth,setAuth]=useState(null),[sessions,setSessions]=useState([]),[open,setOpen]=useState(null),[err,setErr]=useState('');
-  const load=useCallback(async()=>{try{setSessions((await api('/api/admin/sessions')).sessions);setAuth(true);}catch(e){setAuth(false);if(e.status!==401)setErr(e.message);}},[]);
+  const load=useCallback(async()=>{try{setSessions((await api('/api/admin/sessions')).sessions);setAuth(true);setErr('');}catch(e){setAuth(false);setErr(e.status===401?'':(e.message||'Erro ao carregar. Verifique a base de dados (DATABASE_URL).'));}},[]);
   useEffect(()=>{load();},[load]);
   if(auth===null)return <div className="page"><div className="wrap"><p className="muted">A carregar…</p></div></div>;
   if(!auth)return <Login onDone={load} err={err}/>;
@@ -18,7 +18,7 @@ export default function Admin(){
 function Login({onDone,err}){
   const [pw,setPw]=useState(''),[e,setE]=useState(err);
   return <div className="page"><div className="wrap" style={{maxWidth:420}}><form className="box" onSubmit={async ev=>{ev.preventDefault();try{await api('/api/admin/login',{method:'POST',body:{password:pw}});onDone();}catch(x){setE(x.message);}}}>
-    <h2>Administração</h2><p className="muted">Acesso reservado.</p><input type="password" value={pw} onChange={x=>setPw(x.target.value)} placeholder="Palavra-passe" autoFocus/><p className="err">{e}</p><button className="btn">Entrar</button></form></div></div>;
+    <h2>Administração</h2><p className="muted">Acesso reservado.</p><input type="password" value={pw} onChange={x=>setPw(x.target.value)} placeholder="Palavra-passe" autoFocus/><p className="err">{e||err}</p><button className="btn">Entrar</button></form></div></div>;
 }
 function List({sessions,onOpen,reload}){
   const [name,setName]=useState(''),[err,setErr]=useState('');

@@ -2,18 +2,26 @@
 import {useCallback,useEffect,useState} from 'react';
 import dynamic from 'next/dynamic';
 import {FLOORS,viewFor} from '../lib/views';
+import {productColor} from '../lib/colors';
 import '../app/session.css';
 const Casa3D=dynamic(()=>import('./Casa3D'),{ssr:false});
 
 export default function SessionApp({slug}) {
   const [data,setData]=useState(null),[error,setError]=useState(''),[room,setRoom]=useState(null),[focus,setFocus]=useState(null);
-  const [floor,setFloor]=useState(null),[tab,setTab]=useState('materiais'),[text,setText]=useState(''),[sending,setSending]=useState(false),[msg,setMsg]=useState('');
+  const [colors,setColors]=useState({}),[floor,setFloor]=useState(null),[tab,setTab]=useState('materiais'),[text,setText]=useState(''),[sending,setSending]=useState(false),[msg,setMsg]=useState('');
   const load=useCallback(async()=>{
     const r=await fetch(`/api/s/${slug}`,{cache:'no-store'});const j=await r.json();
     if(!r.ok){setError(j.error||'Sessão não encontrada.');return;}
     setData(j);setRoom(old=>old||j.rooms[0]?.id);
   },[slug]);
   useEffect(()=>{load().catch(()=>setError('Não foi possível carregar a sessão.'));},[load]);
+  useEffect(()=>{
+    if(!data)return;let live=true;
+    const all=new Map();data.rooms.forEach(r=>r.groups.forEach(g=>g.products.forEach(p=>all.set(p.id,p))));
+    const need=new Set();data.rooms.forEach(r=>Object.values(r.selection).forEach(id=>id&&need.add(id)));if(focus)need.add(focus);
+    need.forEach(id=>{if(colors[id]===undefined&&all.get(id))productColor(all.get(id)).then(hex=>{if(live)setColors(c=>c[id]!==undefined?c:{...c,[id]:hex||null});});});
+    return()=>{live=false;};
+  },[data,focus]);
   if(error)return <div className="page"><div className="wrap"><div className="box"><h2>Sessão indisponível</h2><p className="muted">{error}</p></div></div></div>;
   if(!data)return <div className="page"><div className="wrap"><p className="muted">A carregar…</p></div></div>;
   const current=data.rooms.find(r=>r.id===room)||data.rooms[0];
@@ -33,6 +41,8 @@ export default function SessionApp({slug}) {
   const shown=focus&&current.groups.flatMap(g=>g.products).find(p=>p.id===focus);
   const chosen=current.groups.map(g=>current.selection[g.part]&&g.products.find(p=>p.id===current.selection[g.part])).filter(Boolean);
   const preview=shown||chosen.at(-1),view=viewFor(current.id,floor),camera={position:view.position,target:view.target};
+  const tints={};for(const r of data.rooms){for(const [part,id] of Object.entries(r.selection)){if(id&&colors[id])(tints[r.id]??={})[part]=colors[id];}}
+  if(shown&&colors[shown.id])(tints[current.id]??={})[shown.part]=colors[shown.id];
   return <div className="page">
     <div className="bar"><a className="brand" href="/"><span>DOMAINE <i>XXV</i></span></a><div className="grow"><h1>{data.name}</h1></div>
       <div className="tabs" role="tablist">{[['materiais','Materiais'],['externas','Outras alterações'],['resumo','Resumo']].map(([id,l])=><button key={id} aria-pressed={tab===id} onClick={()=>setTab(id)}>{l}</button>)}</div></div>
@@ -40,7 +50,7 @@ export default function SessionApp({slug}) {
       {data.notes&&<div className="box"><p className="muted" style={{margin:0}}>{data.notes}</p></div>}
       <div className="tabs" style={{marginBottom:20}}>{data.rooms.map(r=><button key={r.id} aria-pressed={r.id===current.id} onClick={()=>{setRoom(r.id);setFocus(null);setFloor(null);}}>{r.label}</button>)}</div>
       {tab==='materiais'&&<div className="split">
-        <div className="viewport"><Casa3D cutY={view.cut} focus={camera}/>
+        <div className="viewport"><Casa3D cutY={view.cut} focus={camera} tints={tints}/>
           <div className="floors">{Object.entries(FLOORS).map(([id,f])=><button key={id} aria-pressed={view.floor===id} onClick={()=>setFloor(id)}>{f.label}</button>)}</div>
           {preview&&<div className="cap" style={{maxWidth:300,right:'auto'}}>{preview.thumb&&<img src={preview.thumb} alt="" style={{position:'static',width:44,height:44,borderRadius:6,float:'left',marginRight:10}}/>}<b>{preview.title}</b><br/>{preview.brand}</div>}</div>
         <div>{msg&&<p className="err">{msg}</p>}{current.groups.map(g=><section className="group" key={g.part}><h3>{g.label}<small>{g.products.length} opções</small></h3>
