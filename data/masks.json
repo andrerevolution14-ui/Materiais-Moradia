@@ -1,0 +1,110 @@
+{
+ "banho_suite": [
+  "basin",
+  "bath-furniture",
+  "floor-wet",
+  "interior-door",
+  "shower-screen",
+  "toilet",
+  "wall-paint",
+  "wall-tile"
+ ],
+ "corredor": [
+  "floor-dry",
+  "wall-paint"
+ ],
+ "corredor_piso1": [
+  "floor-dry",
+  "interior-door",
+  "wall-paint"
+ ],
+ "cozinha": [
+  "cabinet-front",
+  "sala/floor-dry",
+  "sala/wall-paint",
+  "wall-tile",
+  "worktop"
+ ],
+ "entrada_frontal": [
+  "floor-outdoor"
+ ],
+ "escadas_patamar": [
+  "floor-dry",
+  "interior-door",
+  "wall-paint"
+ ],
+ "exterior_fachada": [
+  "floor-outdoor"
+ ],
+ "jardim_passagem": [
+  "floor-outdoor"
+ ],
+ "jardim_ponto_cozinha": [
+  "floor-outdoor"
+ ],
+ "passagem_jardim": [
+  "floor-outdoor"
+ ],
+ "quarto_secretaria": [
+  "floor-dry",
+  "interior-door",
+  "wall-paint"
+ ],
+ "quarto_varanda_porta": [
+  "floor-dry",
+  "interior-door",
+  "wall-paint",
+  "wardrobe"
+ ],
+ "quarto_varanda_roupeiro": [
+  "floor-dry",
+  "wall-paint",
+  "wardrobe"
+ ],
+ "sala": [
+  "floor-dry",
+  "interior-door",
+  "wall-paint"
+ ],
+ "sala_jantar": [
+  "floor-dry",
+  "wall-paint"
+ ],
+ "sala_jantar_posicao2": [
+  "floor-dry",
+  "wall-paint"
+ ],
+ "sotao_bilhar": [
+  "floor-dry",
+  "interior-door",
+  "wall-paint"
+ ],
+ "sotao_chegada": [
+  "floor-dry",
+  "wall-paint"
+ ],
+ "suite": [
+  "floor-dry",
+  "interior-door",
+  "wall-paint",
+  "wardrobe"
+ ],
+ "wc_f2": [
+  "basin",
+  "bath-furniture",
+  "floor-wet",
+  "interior-door",
+  "toilet",
+  "wall-paint",
+  "wall-tile"
+ ],
+ "wc_social": [
+  "basin",
+  "bath-furniture",
+  "floor-wet",
+  "interior-door",
+  "toilet",
+  "wall-paint",
+  "wall-tile"
+ ]
+}
