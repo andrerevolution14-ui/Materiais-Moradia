@@ -52,3 +52,12 @@ As propostas guardadas localmente não são sincronizadas entre dispositivos ou 
 O catálogo baseia-se no dossier Domaine XXV de três kits de materiais. A imagem é uma simulação: cores, texturas, juntas e acessórios devem ser confirmados com as amostras físicas, fichas dos fabricantes e projeto.
 
 Os panoramas WebP são preservados na resolução original. Os detalhes aprovados da cozinha corrigem o pavimento, puxadores, placa contínua entre móveis e acessórios. Apenas os recursos da divisão selecionada são carregados; os da outra divisão são obtidos ao navegar para ela.
+
+## Sessões por cliente, catálogo e pedidos externos
+
+- `/nome` abre a sessão de um cliente: catálogo por divisão (dados de `data/`, importados do CatalogoMoradias), escolhas guardadas no servidor, sem preços visíveis, e caixa de alterações externas.
+- `/admin` (palavra-passe): cria sessões, copia o link, liga ou desliga materiais no catálogo de cada cliente, vê preços e desvio face ao plafond unitário, e trata os pedidos externos.
+- Os pedidos externos são arrumados por IA (divisão, tipo, resumo, perguntas) quando existe `ANTHROPIC_API_KEY`; sem chave ficam só em texto.
+- Armazenamento: Neon via `DATABASE_URL` (tabelas criadas automaticamente). Sem a variável, em desenvolvimento usa `.data/store.json`; no Vercel a app recusa arrancar sem ela.
+- Variáveis: ver `.env.example`. O build deixou de ser estático (`output: export` removido); `npm start` corre `next start`.
+- A vista 3D por FBX ainda não está ligada: o painel mostra a amostra do material escolhido.

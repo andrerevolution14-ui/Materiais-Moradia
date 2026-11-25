@@ -10,3 +10,4 @@ dist
 .openai/
 .env*
 *-provenance.json
+.data/
