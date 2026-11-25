@@ -47,6 +47,6 @@ function Req({r,reload}){
   const [note,setNote]=useState(r.adminNote||'');
   const set=async p=>{await api(`/api/admin/requests/${r.id}`,{method:'PATCH',body:p});reload();};
   return <div style={{borderTop:'1px solid var(--line)',padding:'12px 0'}}><div className="row"><span className={`pill${r.status==='novo'?' new':''}`}>{r.status}</span><small className="muted">{r.room||'geral'} · {new Date(r.createdAt).toLocaleString('pt-PT')}</small></div>
-    <p style={{margin:'8px 0'}}>{r.text}</p>{r.ai&&<div className="muted"><b>Resumo IA:</b> {r.ai.summary} <i>({r.ai.category})</i>{r.ai.details&&<><br/>{r.ai.details}</>}{r.ai.questions?.length>0&&<ul>{r.ai.questions.map((q,i)=><li key={i}>{q}</li>)}</ul>}</div>}
+    <p style={{margin:'8px 0'}}>{r.text}</p>
     <div className="row"><select value={r.status} onChange={e=>set({status:e.target.value})}>{['novo','em análise','aprovado','recusado'].map(s=><option key={s}>{s}</option>)}</select><input type="text" style={{flex:1,minWidth:180}} value={note} onChange={e=>setNote(e.target.value)} onBlur={()=>note!==r.adminNote&&set({adminNote:note})} placeholder="Nota interna"/></div></div>;
 }

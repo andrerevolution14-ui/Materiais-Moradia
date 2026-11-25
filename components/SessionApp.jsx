@@ -28,7 +28,7 @@ export default function SessionApp({slug}) {
     const res=await fetch(`/api/s/${slug}/requests`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({room:current.id,text})});
     const j=await res.json();setSending(false);
     if(!res.ok){setMsg(j.error||'Não foi possível enviar.');return;}
-    setText('');setMsg('Pedido enviado. O seu consultor vai analisá-lo.');load();
+    setText('');setMsg('Pedido enviado. O seu consultor vai vê-lo.');load();
   }
   const shown=focus&&current.groups.flatMap(g=>g.products).find(p=>p.id===focus);
   const chosen=current.groups.map(g=>current.selection[g.part]&&g.products.find(p=>p.id===current.selection[g.part])).filter(Boolean);
@@ -47,10 +47,10 @@ export default function SessionApp({slug}) {
           <div className="grid">{g.products.map(p=><button key={p.id} className="card" aria-pressed={current.selection[g.part]===p.id} onMouseEnter={()=>setFocus(p.id)} onFocus={()=>setFocus(p.id)} onMouseLeave={()=>setFocus(null)} onClick={()=>choose(g.part,p.id)}>
             {p.thumb&&<img src={p.thumb} alt="" loading="lazy"/>}<span><b>{p.title}</b><small>{p.brand}{p.color?` · ${p.color}`:''}</small></span></button>)}</div></section>)}</div></div>}
       {tab==='externas'&&<div className="split"><form className="box" onSubmit={send}><h2>Alterações fora do catálogo</h2>
-        <p className="muted">Quer mudar algo que não está nas opções, como acrescentar uma divisória ou mover uma porta? Descreva o que pretende para a divisão <b>{current.label}</b>. O consultor analisa e responde.</p>
+        <p className="muted">Quer mudar algo que não está nas opções, como acrescentar uma divisória ou mover uma porta? Descreva o que pretende para a divisão <b>{current.label}</b>. O pedido é enviado tal como o escrever ao consultor, que responde depois.</p>
         <textarea value={text} onChange={e=>setText(e.target.value)} maxLength={2000} placeholder="Ex.: nos arrumos, uma divisão em pladur para criar duas áreas." required/>
         <div className="row" style={{marginTop:12}}><button className="btn" disabled={sending||text.trim().length<5}>{sending?'A enviar…':'Enviar pedido'}</button>{msg&&<span className={/enviado/.test(msg)?'ok':'err'}>{msg}</span>}</div></form>
-        <div><h3 className="muted" style={{margin:'0 0 10px'}}>OS SEUS PEDIDOS</h3><div className="list">{data.requests.length?data.requests.map(r=><div className="item" key={r.id} style={{display:'block'}}><div className="row"><span className="pill">{r.status}</span><small className="muted">{new Date(r.createdAt).toLocaleDateString('pt-PT')}</small></div><p style={{margin:'8px 0 0',fontSize:14}}>{r.summary||r.text}</p></div>):<p className="muted">Ainda não enviou pedidos.</p>}</div></div></div>}
+        <div><h3 className="muted" style={{margin:'0 0 10px'}}>OS SEUS PEDIDOS</h3><div className="list">{data.requests.length?data.requests.map(r=><div className="item" key={r.id} style={{display:'block'}}><div className="row"><span className="pill">{r.status}</span><small className="muted">{new Date(r.createdAt).toLocaleDateString('pt-PT')}</small></div><p style={{margin:'8px 0 0',fontSize:14}}>{r.text}</p></div>):<p className="muted">Ainda não enviou pedidos.</p>}</div></div></div>}
       {tab==='resumo'&&<div className="list">{data.rooms.map(r=><div className="box" key={r.id}><h2>{r.title}</h2><table className="t"><tbody>{r.groups.map(g=>{const p=g.products.find(x=>x.id===r.selection[g.part]);return <tr key={g.part}><td>{g.label}</td><td>{p?<><b>{p.title}</b> <small className="muted">{p.brand} · {p.ref}</small></>:<span className="muted">por escolher</span>}</td></tr>;})}</tbody></table></div>)}
         <p className="muted">As escolhas ficam guardadas neste endereço. Simulação visual: confirmar com amostras físicas.</p></div>}
     </div></div>;

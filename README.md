@@ -55,9 +55,9 @@ Os panoramas WebP são preservados na resolução original. Os detalhes aprovado
 
 ## Sessões por cliente, catálogo e pedidos externos
 
-- `/nome` abre a sessão de um cliente: catálogo por divisão (dados de `data/`, importados do CatalogoMoradias), escolhas guardadas no servidor, sem preços visíveis, e caixa de alterações externas.
+- `/nome` abre a sessão de um cliente: catálogo por divisão (dados em `data/` e imagens em `public/catalog/`, copiados do CatalogoMoradias; o catálogo vive agora só neste projeto), escolhas guardadas no servidor, sem preços visíveis, e caixa de alterações externas.
 - `/admin` (palavra-passe): cria sessões, copia o link, liga ou desliga materiais no catálogo de cada cliente, vê preços e desvio face ao plafond unitário, e trata os pedidos externos.
-- Os pedidos externos são arrumados por IA (divisão, tipo, resumo, perguntas) quando existe `ANTHROPIC_API_KEY`; sem chave ficam só em texto.
+- Os pedidos externos chegam ao painel tal como o cliente os escreveu (texto cru, com a divisão), sem processamento por IA.
 - Armazenamento: Neon via `DATABASE_URL` (tabelas criadas automaticamente). Sem a variável, em desenvolvimento usa `.data/store.json`; no Vercel a app recusa arrancar sem ela.
 - Variáveis: ver `.env.example`. O build deixou de ser estático (`output: export` removido); `npm start` corre `next start`.
 - A vista 3D por FBX ainda não está ligada: o painel mostra a amostra do material escolhido.
