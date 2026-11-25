@@ -52,3 +52,19 @@ As propostas guardadas localmente não são sincronizadas entre dispositivos ou 
 O catálogo baseia-se no dossier Domaine XXV de três kits de materiais. A imagem é uma simulação: cores, texturas, juntas e acessórios devem ser confirmados com as amostras físicas, fichas dos fabricantes e projeto.
 
 Os panoramas WebP são preservados na resolução original. Os detalhes aprovados da cozinha corrigem o pavimento, puxadores, placa contínua entre móveis e acessórios. Apenas os recursos da divisão selecionada são carregados; os da outra divisão são obtidos ao navegar para ela.
+
+## Sessões por cliente, catálogo e pedidos externos
+
+- `/nome` abre a sessão de um cliente: catálogo por divisão (dados em `data/` e imagens em `public/catalog/`, copiados do CatalogoMoradias; o catálogo vive agora só neste projeto), escolhas guardadas no servidor, sem preços visíveis, e caixa de alterações externas.
+- `/admin` (palavra-passe): cria sessões, copia o link, liga ou desliga materiais no catálogo de cada cliente, vê preços e desvio face ao plafond unitário, e trata os pedidos externos.
+- Os pedidos externos chegam ao painel tal como o cliente os escreveu (texto cru, com a divisão), sem processamento por IA.
+- Armazenamento: Neon via `DATABASE_URL` (tabelas criadas automaticamente). Sem a variável, em desenvolvimento usa `.data/store.json`; no Vercel a app recusa arrancar sem ela.
+- Variáveis: ver `.env.example`. O build deixou de ser estático (`output: export` removido); `npm start` corre `next start`.
+- A vista 3D por FBX ainda não está ligada: o painel mostra a amostra do material escolhido.
+
+## Vista 3D da moradia
+
+- `public/models/casa.glb` (23 MB): modelo do FBX `Moradia25-estudo-v25`, sem rua nem vizinhança, simplificado e comprimido (meshopt). 162 materiais com nomes estáveis, por exemplo `Cozinha V07 | lacado branco acetinado`. Unidades em centímetros; R/C a y=0, piso 1 a y≈300, sótão a y≈600.
+- `components/Casa3D.jsx`: visualizador three.js com corte por piso (`cutY`) e foco de câmara. `/3d?cut=262&cam=x,y,z&look=x,y,z` serve para afinar vistas.
+- `lib/views.js`: pisos e câmara por divisão. Só a sala e a cozinha têm câmara própria; as restantes abrem no piso respetivo.
+- Ainda por fazer: aplicar à malha o material escolhido (mapa material do modelo → componente do catálogo, por divisão) e afinar as câmaras das restantes divisões.

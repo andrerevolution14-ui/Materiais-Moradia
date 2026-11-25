@@ -1,0 +1,329 @@
+{
+  "groups": [
+    {
+      "id": "sala",
+      "label": "Sala",
+      "rooms": [
+        "sala"
+      ]
+    },
+    {
+      "id": "cozinha",
+      "label": "Cozinha",
+      "rooms": [
+        "cozinha"
+      ]
+    },
+    {
+      "id": "suite",
+      "label": "Suite",
+      "rooms": [
+        "suite"
+      ]
+    },
+    {
+      "id": "quartos",
+      "label": "Quartos",
+      "rooms": [
+        "quarto-1",
+        "quarto-2"
+      ]
+    },
+    {
+      "id": "banhos",
+      "label": "Casas de banho",
+      "rooms": [
+        "wc-suite",
+        "wc-comum",
+        "wc-servico"
+      ]
+    },
+    {
+      "id": "hall",
+      "label": "Hall e sótão",
+      "rooms": [
+        "hall",
+        "sotao"
+      ]
+    },
+    {
+      "id": "exterior",
+      "label": "Exterior",
+      "rooms": [
+        "exterior"
+      ]
+    }
+  ],
+  "rooms": [
+    {
+      "id": "sala",
+      "label": "Sala",
+      "title": "Sala de estar e jantar",
+      "subtitle": "Escolha as superfícies, os tons e os detalhes.",
+      "budget": [
+        [
+          "Pavimento",
+          "16,80 €/m²"
+        ]
+      ],
+      "notice": "",
+      "parts": [
+        "floor-dry",
+        "wall-paint",
+        "skirting",
+        "interior-door",
+        "door-handle",
+        "window"
+      ]
+    },
+    {
+      "id": "cozinha",
+      "label": "Cozinha",
+      "title": "Cozinha",
+      "subtitle": "Escolha as superfícies, os tons e os detalhes.",
+      "budget": [
+        [
+          "Cerâmicos",
+          "22,40 €/m²"
+        ],
+        [
+          "Mobiliário",
+          "4.000 €"
+        ],
+        [
+          "Eletrodomésticos",
+          "1.500 €"
+        ]
+      ],
+      "notice": "Preços por componente. Mobiliário: orçamento conjunto por medição; bancadas, cubas e ferragens a discriminar.",
+      "parts": [
+        "cabinet-front",
+        "handle",
+        "worktop",
+        "sink",
+        "kitchen-tap",
+        "appliance",
+        "floor-wet",
+        "wall-tile",
+        "wall-paint",
+        "window"
+      ]
+    },
+    {
+      "id": "suite",
+      "label": "Suite",
+      "title": "Suite",
+      "subtitle": "Escolha as superfícies, os tons e os detalhes.",
+      "budget": [
+        [
+          "Pavimento",
+          "16,80 €/m²"
+        ]
+      ],
+      "notice": "",
+      "parts": [
+        "floor-dry",
+        "wall-paint",
+        "skirting",
+        "interior-door",
+        "door-handle",
+        "window",
+        "wardrobe",
+        "wardrobe-handle"
+      ]
+    },
+    {
+      "id": "quarto-1",
+      "label": "Quarto 1",
+      "title": "Quarto 1",
+      "subtitle": "Escolha as superfícies, os tons e os detalhes.",
+      "budget": [
+        [
+          "Pavimento",
+          "16,80 €/m²"
+        ]
+      ],
+      "notice": "",
+      "parts": [
+        "floor-dry",
+        "wall-paint",
+        "skirting",
+        "interior-door",
+        "door-handle",
+        "window",
+        "wardrobe",
+        "wardrobe-handle"
+      ]
+    },
+    {
+      "id": "quarto-2",
+      "label": "Quarto 2",
+      "title": "Quarto 2",
+      "subtitle": "Escolha as superfícies, os tons e os detalhes.",
+      "budget": [
+        [
+          "Pavimento",
+          "16,80 €/m²"
+        ]
+      ],
+      "notice": "",
+      "parts": [
+        "floor-dry",
+        "wall-paint",
+        "skirting",
+        "interior-door",
+        "door-handle",
+        "window",
+        "wardrobe",
+        "wardrobe-handle"
+      ]
+    },
+    {
+      "id": "wc-suite",
+      "label": "WC da suite",
+      "title": "Casa de banho da suite",
+      "subtitle": "Escolha as superfícies, os tons e os detalhes.",
+      "budget": [
+        [
+          "Cerâmicos",
+          "22,40 €/m²"
+        ],
+        [
+          "Equipamentos",
+          "1.000 €/WC"
+        ]
+      ],
+      "notice": "1.000 € por WC para o conjunto de equipamentos. As peças apresentadas são alternativas; verificar composição e compatibilidade.",
+      "parts": [
+        "floor-wet",
+        "wall-tile",
+        "wall-paint",
+        "bath-furniture",
+        "basin",
+        "basin-tap",
+        "toilet",
+        "toilet-seat",
+        "shower-tray",
+        "shower-screen",
+        "shower-tap",
+        "bath-fitting",
+        "interior-door",
+        "door-handle"
+      ]
+    },
+    {
+      "id": "wc-comum",
+      "label": "WC comum",
+      "title": "Casa de banho comum",
+      "subtitle": "Escolha as superfícies, os tons e os detalhes.",
+      "budget": [
+        [
+          "Cerâmicos",
+          "22,40 €/m²"
+        ],
+        [
+          "Equipamentos",
+          "1.000 €/WC"
+        ]
+      ],
+      "notice": "1.000 € por WC para o conjunto de equipamentos. As peças apresentadas são alternativas; verificar composição e compatibilidade.",
+      "parts": [
+        "floor-wet",
+        "wall-tile",
+        "wall-paint",
+        "bath-furniture",
+        "basin",
+        "basin-tap",
+        "toilet",
+        "toilet-seat",
+        "shower-tray",
+        "shower-screen",
+        "shower-tap",
+        "bath-fitting",
+        "interior-door",
+        "door-handle"
+      ]
+    },
+    {
+      "id": "wc-servico",
+      "label": "WC de serviço",
+      "title": "Casa de banho de serviço",
+      "subtitle": "Escolha as superfícies, os tons e os detalhes.",
+      "budget": [
+        [
+          "Cerâmicos",
+          "22,40 €/m²"
+        ],
+        [
+          "Equipamentos",
+          "1.000 €/WC"
+        ]
+      ],
+      "notice": "1.000 € por WC para o conjunto de equipamentos. As peças apresentadas são alternativas; verificar composição e compatibilidade.",
+      "parts": [
+        "floor-wet",
+        "wall-tile",
+        "wall-paint",
+        "bath-furniture",
+        "basin",
+        "basin-tap",
+        "toilet",
+        "toilet-seat",
+        "bath-fitting",
+        "interior-door",
+        "door-handle"
+      ]
+    },
+    {
+      "id": "hall",
+      "label": "Hall e circulação",
+      "title": "Hall e circulação",
+      "subtitle": "Escolha as superfícies, os tons e os detalhes.",
+      "budget": [
+        [
+          "Pavimento",
+          "16,80 €/m²"
+        ]
+      ],
+      "notice": "",
+      "parts": [
+        "floor-dry",
+        "wall-paint",
+        "skirting",
+        "interior-door",
+        "door-handle"
+      ]
+    },
+    {
+      "id": "sotao",
+      "label": "Sótão",
+      "title": "Sótão",
+      "subtitle": "Escolha as superfícies, os tons e os detalhes.",
+      "budget": [
+        [
+          "Pavimento",
+          "16,80 €/m²"
+        ]
+      ],
+      "notice": "",
+      "parts": [
+        "floor-dry",
+        "wall-paint",
+        "skirting",
+        "window"
+      ]
+    },
+    {
+      "id": "exterior",
+      "label": "Exterior e acessos",
+      "title": "Exterior e acessos",
+      "subtitle": "Lajetas para terraços, caminhos e acessos.",
+      "budget": [],
+      "notice": "",
+      "parts": [
+        "floor-outdoor",
+        "window"
+      ]
+    }
+  ]
+}
