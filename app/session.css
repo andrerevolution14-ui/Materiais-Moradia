@@ -1,4 +1,4 @@
-.page{flex:1;overflow:auto;background:var(--paper);color:var(--ink);-webkit-overflow-scrolling:touch}
+.page{flex:1;min-height:0;height:100%;max-height:100dvh;overflow:auto;background:var(--paper);color:var(--ink);-webkit-overflow-scrolling:touch}
 .bar{display:flex;align-items:center;gap:16px;padding:14px 28px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--paper);z-index:5}
 .bar .brand{min-width:0}.bar .grow{flex:1}.bar h1{margin:0;font:400 22px var(--serif)}
 .tabs{display:flex;gap:4px;padding:4px;border-radius:28px;background:#eaece5;overflow-x:auto;max-width:100%}

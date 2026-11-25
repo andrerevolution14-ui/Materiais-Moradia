@@ -6,7 +6,7 @@ const eur=n=>n==null?'—':n.toLocaleString('pt-PT',{style:'currency',currency:'
 
 export default function Admin(){
   const [auth,setAuth]=useState(null),[sessions,setSessions]=useState([]),[open,setOpen]=useState(null),[err,setErr]=useState('');
-  const load=useCallback(async()=>{try{setSessions((await api('/api/admin/sessions')).sessions);setAuth(true);}catch(e){setAuth(false);if(e.status!==401)setErr(e.message);}},[]);
+  const load=useCallback(async()=>{try{setSessions((await api('/api/admin/sessions')).sessions);setAuth(true);setErr('');}catch(e){setAuth(false);setErr(e.status===401?'':(e.message||'Erro ao carregar. Verifique a base de dados (DATABASE_URL).'));}},[]);
   useEffect(()=>{load();},[load]);
   if(auth===null)return <div className="page"><div className="wrap"><p className="muted">A carregar…</p></div></div>;
   if(!auth)return <Login onDone={load} err={err}/>;
@@ -18,7 +18,7 @@ export default function Admin(){
 function Login({onDone,err}){
   const [pw,setPw]=useState(''),[e,setE]=useState(err);
   return <div className="page"><div className="wrap" style={{maxWidth:420}}><form className="box" onSubmit={async ev=>{ev.preventDefault();try{await api('/api/admin/login',{method:'POST',body:{password:pw}});onDone();}catch(x){setE(x.message);}}}>
-    <h2>Administração</h2><p className="muted">Acesso reservado.</p><input type="password" value={pw} onChange={x=>setPw(x.target.value)} placeholder="Palavra-passe" autoFocus/><p className="err">{e}</p><button className="btn">Entrar</button></form></div></div>;
+    <h2>Administração</h2><p className="muted">Acesso reservado.</p><input type="password" value={pw} onChange={x=>setPw(x.target.value)} placeholder="Palavra-passe" autoFocus/><p className="err">{e||err}</p><button className="btn">Entrar</button></form></div></div>;
 }
 function List({sessions,onOpen,reload}){
   const [name,setName]=useState(''),[err,setErr]=useState('');
@@ -39,7 +39,7 @@ function Detail({slug}){
     <div className="box" style={{marginTop:16}}><h2>Pedidos de alteração externa</h2>{d.requests.length?d.requests.map(r=><Req key={r.id} r={r} reload={load}/>):<p className="muted">Sem pedidos.</p>}</div>
     <div className="tabs" style={{margin:'20px 0'}}>{d.rooms.map(r=><button key={r.id} aria-pressed={r.id===cur.id} onClick={()=>setRoom(r.id)}>{r.label}</button>)}</div>
     <p className="muted">Catálogo do cliente: ative os materiais que ele pode ver. Os preços só aparecem aqui. Verde = dentro do plafond unitário; vermelho = acima (extra de obra).</p>
-    {cur.groups.map(g=><section className="group" key={g.part}><h3>{g.label}<small>selecionado: {g.products.find(p=>p.id===cur.selection[g.part])?.title||'—'}</small></h3><div className="grid">{g.products.map(p=>
+    {cur.groups.map(g=><section className="group" key={g.part}><h3>{g.label}<small>selecionado: {g.products.find(p=>p.id===(cur.selection[g.part]||'').split('#')[0])?.title||'—'}{(cur.selection[g.part]||'').includes('#')?` #${cur.selection[g.part].split('#')[1]}`:''}</small></h3><div className="grid">{g.products.map(p=>
       <button key={p.id} className={`card${p.allowed?'':' off'}`} aria-pressed={p.allowed} onClick={()=>toggle(p.id,!p.allowed)}>{p.thumb&&<img src={p.thumb} alt="" loading="lazy"/>}
         <span><b>{p.title}</b><small>{p.brand} · {eur(p.price)}/{p.unit}</small>{p.limit!=null&&<small style={{display:'block',color:p.delta>0?'#9b2c2c':'#2f6b3a'}}>plafond {eur(p.limit)}{p.delta>0?` · +${eur(p.delta)}`:''}</small>}{p.extra&&<em className="tag">acima do plafond</em>}{!p.available&&<em className="tag">indisponível</em>}</span></button>)}</div></section>)}</>;
 }

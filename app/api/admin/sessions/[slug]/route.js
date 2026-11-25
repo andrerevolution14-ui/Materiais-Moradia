@@ -24,7 +24,7 @@ export const PATCH = handle(async (request, {params}) => {
     const set = new Set(session.allowed[room] || []);
     on ? set.add(product) : set.delete(product);
     patch.allowed = {...session.allowed, [room]: [...set]};
-    if (!on) { const sel = {...(session.selections[room] || {})}; if (sel[p.part] === product) { delete sel[p.part]; patch.selections = {...session.selections, [room]: sel}; } }
+    if (!on) { const sel = {...(session.selections[room] || {})}; if ((sel[p.part] || '').split('#')[0] === product) { delete sel[p.part]; patch.selections = {...session.selections, [room]: sel}; } }
   }
   await store.updateSession(slug, patch);
   return json({ok: true});
