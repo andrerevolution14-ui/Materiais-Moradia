@@ -4,7 +4,7 @@
    a posição do objeto na planta (centímetros; R/C y<290, piso 1 y<590, sótão acima). */
 import {NodeIO} from '@gltf-transform/core';
 import {ALL_EXTENSIONS} from '@gltf-transform/extensions';
-import {getBounds} from '@gltf-transform/functions';
+import {getBounds, flatten, join, dedup, prune, quantize} from '@gltf-transform/functions';
 import {MeshoptDecoder, MeshoptEncoder} from 'meshoptimizer';
 import {meshopt} from '@gltf-transform/functions';
 
@@ -100,5 +100,16 @@ if (flag === '--debug') {  // cores por componente para verificar visualmente
     m.listPrimitives().forEach(p => p.setMaterial(cache[key]));
   }
 }
-await doc.transform(meshopt({encoder: MeshoptEncoder, level: 'medium'}));
+/* Aligeirar: funde os objetos da mesma divisão/componente (e material) num só, quantiza e comprime.
+   As marcas room/part ficam no nó-pai de cada grupo; o Casa3D procura-as subindo na hierarquia. */
+const scene = doc.getRoot().listScenes()[0], groups = new Map();
+await doc.transform(flatten());
+for (const n of doc.getRoot().listNodes()) {
+  if (!n.getMesh()) continue;
+  const e = n.getExtras() || {}, k = `${e.room || '-'}|${e.part || '-'}`;
+  let p = groups.get(k);
+  if (!p) { p = doc.createNode('g:' + k).setExtras({room: e.room, part: e.part}); scene.addChild(p); groups.set(k, p); }
+  p.addChild(n);
+}
+await doc.transform(join({keepNamed: false}), dedup(), prune(), quantize({quantizePosition: 14, quantizeNormal: 8}), meshopt({encoder: MeshoptEncoder, level: 'high'}));
 await io.write(output, doc);
