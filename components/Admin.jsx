@@ -39,7 +39,7 @@ function Detail({slug}){
     <div className="box" style={{marginTop:16}}><h2>Pedidos de alteração externa</h2>{d.requests.length?d.requests.map(r=><Req key={r.id} r={r} reload={load}/>):<p className="muted">Sem pedidos.</p>}</div>
     <div className="tabs" style={{margin:'20px 0'}}>{d.rooms.map(r=><button key={r.id} aria-pressed={r.id===cur.id} onClick={()=>setRoom(r.id)}>{r.label}</button>)}</div>
     <p className="muted">Catálogo do cliente: ative os materiais que ele pode ver. Os preços só aparecem aqui. Verde = dentro do plafond unitário; vermelho = acima (extra de obra).</p>
-    {cur.groups.map(g=><section className="group" key={g.part}><h3>{g.label}<small>selecionado: {g.products.find(p=>p.id===cur.selection[g.part])?.title||'—'}</small></h3><div className="grid">{g.products.map(p=>
+    {cur.groups.map(g=><section className="group" key={g.part}><h3>{g.label}<small>selecionado: {g.products.find(p=>p.id===(cur.selection[g.part]||'').split('#')[0])?.title||'—'}{(cur.selection[g.part]||'').includes('#')?` #${cur.selection[g.part].split('#')[1]}`:''}</small></h3><div className="grid">{g.products.map(p=>
       <button key={p.id} className={`card${p.allowed?'':' off'}`} aria-pressed={p.allowed} onClick={()=>toggle(p.id,!p.allowed)}>{p.thumb&&<img src={p.thumb} alt="" loading="lazy"/>}
         <span><b>{p.title}</b><small>{p.brand} · {eur(p.price)}/{p.unit}</small>{p.limit!=null&&<small style={{display:'block',color:p.delta>0?'#9b2c2c':'#2f6b3a'}}>plafond {eur(p.limit)}{p.delta>0?` · +${eur(p.delta)}`:''}</small>}{p.extra&&<em className="tag">acima do plafond</em>}{!p.available&&<em className="tag">indisponível</em>}</span></button>)}</div></section>)}</>;
 }

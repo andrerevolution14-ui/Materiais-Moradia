@@ -26,7 +26,7 @@ export default function Casa3D({cutY=null,focus=null,tints=null,src='/models/cas
     loader.load(src,gltf=>{
       if(disposed)return;const model=gltf.scene;
       model.traverse(o=>{if(o.isMesh){const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m.clippingPlanes=[plane];m.clipShadows=false;});}});
-      const groups={};model.traverse(o=>{if(o.isMesh&&o.userData.room&&o.userData.part){o.userData.orig=o.material;(groups[`${o.userData.room}/${o.userData.part}`]??=[]).push(o);}});
+      const groups={};model.traverse(o=>{if(!o.isMesh)return;let t=null;for(let p=o;p&&!t;p=p.parent)if(p.userData.room)t=p.userData;if(t&&t.part){o.userData.orig=o.material;(groups[`${t.room}/${t.part}`]??=[]).push(o);}});
       scene.add(model);api.current={THREE,scene,camera,controls,plane,model,renderer,groups,tinted:{}};setState('');setLoaded(true);onReady?.(api.current);
     },e=>{},err=>setState('Não foi possível carregar o modelo 3D.'));
     api.current={scene,camera,controls,plane,renderer};
@@ -42,7 +42,7 @@ export default function Casa3D({cutY=null,focus=null,tints=null,src='/models/cas
       if(!hex){if(prev){meshes.forEach(m=>{m.material=m.userData.orig;});prev.dispose?.();delete a.tinted[key];}continue;}
       if(prev&&prev.userData.hex===hex)continue;
       const base=Array.isArray(meshes[0].userData.orig)?meshes[0].userData.orig[0]:meshes[0].userData.orig;
-      const mat=prev||base.clone();mat.userData.hex=hex;mat.color.set(hex);mat.map=null;mat.needsUpdate=true;a.tinted[key]=mat;
+      const mat=prev||new THREE.MeshStandardMaterial({roughness:base.roughness??0.7,metalness:Math.min(base.metalness??0,0.2),side:base.side,clippingPlanes:[a.plane],clipShadows:false});mat.userData.hex=hex;mat.color.set(hex);mat.needsUpdate=true;a.tinted[key]=mat;
       meshes.forEach(m=>{m.material=Array.isArray(m.userData.orig)?m.userData.orig.map(()=>mat):mat;});
     }
   },[tints,loaded]);

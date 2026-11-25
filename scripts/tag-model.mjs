@@ -43,6 +43,7 @@ const roomOf = (name, c) => { for (const [re, r] of ROOM_PREFIX) if (re.test(nam
 function partOf(name, room, mat) {
   if (room === 'exterior') return /pavimento|lajeta|pedra irregular/.test(name) ? 'floor-outdoor' : /janela|caixilho/.test(name) ? 'window' : null;
   if (/rodapé/.test(name)) return room === 'sotao' || !WET.has(room) ? 'skirting' : null;
+  if (/^pintura mate/.test(mat) && !/porta|janela|caixilho|roupeiro|armário|puxador/.test(name)) return 'wall-paint';  // tudo o que é pintura mate (paredes e tetos)
   if (/teto|luz linear|difusor|foco|led|lâmpada/.test(name)) return null;
   if (/janela|caixilho|claraboia|moldura|peitoril|porta do jardim|vidro fixo/.test(name)) return 'window';
   if (room === 'cozinha') {
