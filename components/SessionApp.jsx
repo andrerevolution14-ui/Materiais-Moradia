@@ -1,10 +1,13 @@
 'use client';
 import {useCallback,useEffect,useState} from 'react';
+import dynamic from 'next/dynamic';
+import {FLOORS,viewFor} from '../lib/views';
 import '../app/session.css';
+const Casa3D=dynamic(()=>import('./Casa3D'),{ssr:false});
 
 export default function SessionApp({slug}) {
   const [data,setData]=useState(null),[error,setError]=useState(''),[room,setRoom]=useState(null),[focus,setFocus]=useState(null);
-  const [tab,setTab]=useState('materiais'),[text,setText]=useState(''),[sending,setSending]=useState(false),[msg,setMsg]=useState('');
+  const [floor,setFloor]=useState(null),[tab,setTab]=useState('materiais'),[text,setText]=useState(''),[sending,setSending]=useState(false),[msg,setMsg]=useState('');
   const load=useCallback(async()=>{
     const r=await fetch(`/api/s/${slug}`,{cache:'no-store'});const j=await r.json();
     if(!r.ok){setError(j.error||'Sessão não encontrada.');return;}
@@ -29,15 +32,17 @@ export default function SessionApp({slug}) {
   }
   const shown=focus&&current.groups.flatMap(g=>g.products).find(p=>p.id===focus);
   const chosen=current.groups.map(g=>current.selection[g.part]&&g.products.find(p=>p.id===current.selection[g.part])).filter(Boolean);
-  const preview=shown||chosen.at(-1);
+  const preview=shown||chosen.at(-1),view=viewFor(current.id,floor),camera={position:view.position,target:view.target};
   return <div className="page">
     <div className="bar"><a className="brand" href="/"><span>DOMAINE <i>XXV</i></span></a><div className="grow"><h1>{data.name}</h1></div>
       <div className="tabs" role="tablist">{[['materiais','Materiais'],['externas','Outras alterações'],['resumo','Resumo']].map(([id,l])=><button key={id} aria-pressed={tab===id} onClick={()=>setTab(id)}>{l}</button>)}</div></div>
     <div className="wrap">
       {data.notes&&<div className="box"><p className="muted" style={{margin:0}}>{data.notes}</p></div>}
-      <div className="tabs" style={{marginBottom:20}}>{data.rooms.map(r=><button key={r.id} aria-pressed={r.id===current.id} onClick={()=>{setRoom(r.id);setFocus(null);}}>{r.label}</button>)}</div>
+      <div className="tabs" style={{marginBottom:20}}>{data.rooms.map(r=><button key={r.id} aria-pressed={r.id===current.id} onClick={()=>{setRoom(r.id);setFocus(null);setFloor(null);}}>{r.label}</button>)}</div>
       {tab==='materiais'&&<div className="split">
-        <div className="viewport">{preview?.image?<><img src={preview.image} alt={preview.title}/><div className="cap"><b>{preview.title}</b><br/>{preview.brand} · {preview.ref}</div></>:<p>A vista 3D da moradia chega em breve.<br/>Escolha materiais à direita.</p>}</div>
+        <div className="viewport"><Casa3D cutY={view.cut} focus={camera}/>
+          <div className="floors">{Object.entries(FLOORS).map(([id,f])=><button key={id} aria-pressed={view.floor===id} onClick={()=>setFloor(id)}>{f.label}</button>)}</div>
+          {preview&&<div className="cap" style={{maxWidth:300,right:'auto'}}>{preview.thumb&&<img src={preview.thumb} alt="" style={{position:'static',width:44,height:44,borderRadius:6,float:'left',marginRight:10}}/>}<b>{preview.title}</b><br/>{preview.brand}</div>}</div>
         <div>{msg&&<p className="err">{msg}</p>}{current.groups.map(g=><section className="group" key={g.part}><h3>{g.label}<small>{g.products.length} opções</small></h3>
           <div className="grid">{g.products.map(p=><button key={p.id} className="card" aria-pressed={current.selection[g.part]===p.id} onMouseEnter={()=>setFocus(p.id)} onFocus={()=>setFocus(p.id)} onMouseLeave={()=>setFocus(null)} onClick={()=>choose(g.part,p.id)}>
             {p.thumb&&<img src={p.thumb} alt="" loading="lazy"/>}<span><b>{p.title}</b><small>{p.brand}{p.color?` · ${p.color}`:''}</small></span></button>)}</div></section>)}</div></div>}

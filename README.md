@@ -61,3 +61,10 @@ Os panoramas WebP são preservados na resolução original. Os detalhes aprovado
 - Armazenamento: Neon via `DATABASE_URL` (tabelas criadas automaticamente). Sem a variável, em desenvolvimento usa `.data/store.json`; no Vercel a app recusa arrancar sem ela.
 - Variáveis: ver `.env.example`. O build deixou de ser estático (`output: export` removido); `npm start` corre `next start`.
 - A vista 3D por FBX ainda não está ligada: o painel mostra a amostra do material escolhido.
+
+## Vista 3D da moradia
+
+- `public/models/casa.glb` (23 MB): modelo do FBX `Moradia25-estudo-v25`, sem rua nem vizinhança, simplificado e comprimido (meshopt). 162 materiais com nomes estáveis, por exemplo `Cozinha V07 | lacado branco acetinado`. Unidades em centímetros; R/C a y=0, piso 1 a y≈300, sótão a y≈600.
+- `components/Casa3D.jsx`: visualizador three.js com corte por piso (`cutY`) e foco de câmara. `/3d?cut=262&cam=x,y,z&look=x,y,z` serve para afinar vistas.
+- `lib/views.js`: pisos e câmara por divisão. Só a sala e a cozinha têm câmara própria; as restantes abrem no piso respetivo.
+- Ainda por fazer: aplicar à malha o material escolhido (mapa material do modelo → componente do catálogo, por divisão) e afinar as câmaras das restantes divisões.
