@@ -1,6 +1,5 @@
 'use client';
 import {useCallback,useEffect,useState} from 'react';
-import '../app/session.css';
 const api=async(url,opt)=>{const r=await fetch(url,{cache:'no-store',...opt,headers:{'content-type':'application/json'},body:opt?.body&&JSON.stringify(opt.body)});const j=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(j.error||'Erro'),{status:r.status});return j;};
 const eur=n=>n==null?'—':n.toLocaleString('pt-PT',{style:'currency',currency:'EUR'});
 
@@ -10,15 +9,21 @@ export default function Admin(){
   useEffect(()=>{load();},[load]);
   if(auth===null)return <div className="page"><div className="wrap"><p className="muted">A carregar…</p></div></div>;
   if(!auth)return <Login onDone={load} err={err}/>;
-  return <div className="page"><div className="bar"><b style={{letterSpacing:'.18em'}}>ATELIER · ADMIN</b><span className="grow"/>
+  return <div className="page"><div className="bar"><a className="mark" href="/admin">DOMAINE <i>XXV</i></a><small className="muted" style={{letterSpacing:'.2em',textTransform:'uppercase',fontSize:10}}>Consultor</small><span className="grow"/>
     {open&&<button className="btn ghost" onClick={()=>{setOpen(null);load();}}>← Sessões</button>}
     <button className="btn ghost" onClick={async()=>{await api('/api/admin/login',{method:'POST',body:{logout:true}});setAuth(false);}}>Sair</button></div>
     <div className="wrap">{open?<Detail slug={open}/>:<List sessions={sessions} onOpen={setOpen} reload={load}/>}</div></div>;
 }
 function Login({onDone,err}){
-  const [pw,setPw]=useState(''),[e,setE]=useState(err);
-  return <div className="page"><div className="wrap" style={{maxWidth:420}}><form className="box" onSubmit={async ev=>{ev.preventDefault();try{await api('/api/admin/login',{method:'POST',body:{password:pw}});onDone();}catch(x){setE(x.message);}}}>
-    <h2>Administração</h2><p className="muted">Acesso reservado.</p><input type="password" value={pw} onChange={x=>setPw(x.target.value)} placeholder="Palavra-passe" autoFocus/><p className="err">{e||err}</p><button className="btn">Entrar</button></form></div></div>;
+  const [pw,setPw]=useState(''),[e,setE]=useState(err),[busy,setBusy]=useState(false);
+  return <div className="login"><div className="login-art" style={{backgroundImage:'url(/pano/exterior_fachada.webp)'}}><div><small>Oliveirinha · Aveiro</small><p>Moradias T3</p></div></div>
+    <form className="login-form" onSubmit={async ev=>{ev.preventDefault();setBusy(true);try{await api('/api/admin/login',{method:'POST',body:{password:pw}});onDone();}catch(x){setE(x.message);}setBusy(false);}}>
+      <a className="mark" href="/">DOMAINE <i>XXV</i></a>
+      <div><small className="eyebrow">Área do consultor</small><h1>Bem-vindo</h1><p className="muted">Crie sessões para os clientes, defina o catálogo de cada um e acompanhe os pedidos.</p></div>
+      <label className="field"><span>Palavra-passe</span><input type="password" value={pw} onChange={x=>setPw(x.target.value)} autoFocus autoComplete="current-password"/></label>
+      {(e||err)&&<p className="err">{e||err}</p>}
+      <button className="btn big" disabled={busy||!pw}>{busy?'A entrar…':'Entrar'}</button>
+      <small className="muted">Acesso reservado.</small></form></div>;
 }
 function List({sessions,onOpen,reload}){
   const [name,setName]=useState(''),[err,setErr]=useState('');
@@ -38,10 +43,10 @@ function Detail({slug}){
     <button className="btn ghost" onClick={async()=>{if(confirm('Apagar esta sessão e os seus pedidos?')){await api(`/api/admin/sessions/${slug}`,{method:'DELETE'});location.reload();}}}>Apagar</button></div>
     <div className="box" style={{marginTop:16}}><h2>Pedidos de alteração externa</h2>{d.requests.length?d.requests.map(r=><Req key={r.id} r={r} reload={load}/>):<p className="muted">Sem pedidos.</p>}</div>
     <div className="tabs" style={{margin:'20px 0'}}>{d.rooms.map(r=><button key={r.id} aria-pressed={r.id===cur.id} onClick={()=>setRoom(r.id)}>{r.label}</button>)}</div>
-    <p className="muted">Catálogo do cliente: ative os materiais que ele pode ver. Os preços só aparecem aqui. Verde = dentro do plafond unitário; vermelho = acima (extra de obra).</p>
+    <p className="muted">Catálogo do cliente: ative os materiais que ele pode ver. Os preços só aparecem aqui. Os materiais acima do plafond unitário aparecem marcados (extra de obra).</p>
     {cur.groups.map(g=><section className="group" key={g.part}><h3>{g.label}<small>selecionado: {g.products.find(p=>p.id===(cur.selection[g.part]||'').split('#')[0])?.title||'—'}{(cur.selection[g.part]||'').includes('#')?` #${cur.selection[g.part].split('#')[1]}`:''}</small></h3><div className="grid">{g.products.map(p=>
       <button key={p.id} className={`card${p.allowed?'':' off'}`} aria-pressed={p.allowed} onClick={()=>toggle(p.id,!p.allowed)}>{p.thumb&&<img src={p.thumb} alt="" loading="lazy"/>}
-        <span><b>{p.title}</b><small>{p.brand} · {eur(p.price)}/{p.unit}</small>{p.limit!=null&&<small style={{display:'block',color:p.delta>0?'#9b2c2c':'#2f6b3a'}}>plafond {eur(p.limit)}{p.delta>0?` · +${eur(p.delta)}`:''}</small>}{p.extra&&<em className="tag">acima do plafond</em>}{!p.available&&<em className="tag">indisponível</em>}</span></button>)}</div></section>)}</>;
+        <span><b>{p.title}</b><small>{p.brand} · {eur(p.price)}/{p.unit}</small>{p.limit!=null&&<small style={{display:'block',color:p.delta>0?'#b3261e':'var(--muted)'}}>plafond {eur(p.limit)}{p.delta>0?` · +${eur(p.delta)}`:''}</small>}{p.extra&&<em className="tag">acima do plafond</em>}{!p.available&&<em className="tag">indisponível</em>}</span></button>)}</div></section>)}</>;
 }
 function Req({r,reload}){
   const [note,setNote]=useState(r.adminNote||'');
