@@ -1,3 +1,4 @@
-import Home from '../components/Home';
-export const metadata = {title: 'Domaine XXV · Acabamentos da sua moradia'};
-export default function Page() { return <Home/>; }
+import Atelier from '../components/Atelier';
+import './atelier.css';
+export const metadata = {title: 'Domaine XXV — Atelier de materiais'};
+export default function Page() { return <Atelier />; }
