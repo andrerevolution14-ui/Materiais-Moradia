@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import Pano from './Pano';
 import {SCENES, sceneById, FLOOR_ORDER, panoUrl, thumbUrl, maskUrl} from '../lib/scenes';
 import MASKS from '../data/masks.json';
+import VARIANTS from '../data/variants.json';
 import {compose, loadImage} from '../lib/panoCompose';
 import {productColor} from '../lib/colors';
 const Casa3D = dynamic(() => import('./Casa3D'), {ssr: false});
@@ -42,8 +43,17 @@ export default function SessionApp({slug}) {
   }, [data, focus, products]);
 
   /* Composição da vista atual com as escolhas da divisão (e a pré-visualização ao passar o rato). */
+  /* Vistas com renders fotorrealistas (data/variants.json): só os componentes e as opções renderizados; cada escolha vem do render que a contém. */
+  const V = VARIANTS[sceneId];
   const layers = useMemo(() => {
     if (!data) return [];
+    if (V) {
+      const r = data.rooms.find(x => x.id === scene.room); if (!r) return [];
+      return Object.entries(V.parts).map(([part, spec]) => {
+        let id = baseId(r.selection[part]); if (focus && products.get(focus)?.part === part) id = focus;
+        const n = spec.renders[id]; return n ? {mask: maskUrl(sceneId, `${part}@${n}`), variant: V.images[n - 1]} : null;
+      }).filter(Boolean);
+    }
     return (MASKS[sceneId] || []).map(k => {
       const [rid, part] = k.includes('/') ? k.split('/') : [scene.room, k], r = data.rooms.find(x => x.id === rid); if (!r) return null;
       let id = r.selection[part]; if (rid === scene.room && focus && products.get(focus)?.part === part) id = focus;
@@ -89,14 +99,15 @@ export default function SessionApp({slug}) {
     {panel === 'materiais' && <aside className="drawer">
       <div className="drawer-head"><div><small>Materiais</small><h2>{room?.title || room?.label || 'Exterior'}</h2></div><button className="x" onClick={() => setPanel(null)} aria-label="Fechar">×</button></div>
       {msg && <p className="err">{msg}</p>}
-      {!room ? <p className="muted">Esta vista não tem materiais para escolher.</p> : <div className="groups">{room.groups.map(g => {
+      {!room ? <p className="muted">Esta vista não tem materiais para escolher.</p> : <div className="groups">{room.groups.filter(g => !V || V.parts[g.part]).map(g => {
+        const opts = V ? g.products.filter(p => p.id === V.parts[g.part].base || V.parts[g.part].renders[p.id]) : g.products;
         const sel = room.selection[g.part], chosen = products.get(baseId(sel)), isOpen = open === g.part, shown = masked.has(g.part);
         return <section key={g.part} className={'group' + (isOpen ? ' open' : '')}>
           <button className="group-head" onClick={() => setOpen(isOpen ? null : g.part)} aria-expanded={isOpen}>
             <span className="dot" style={{background: customHex(sel) || colors[sel] || 'transparent'}}/>
-            <span className="gl"><b>{g.label}</b><small>{chosen ? chosen.title : 'Por escolher'}{!shown ? ' · não visível nesta vista' : ''}</small></span><span className="chev">{isOpen ? '−' : '+'}</span>
+            <span className="gl"><b>{g.label}</b><small>{chosen ? chosen.title : 'Por escolher'}{!shown && !V ? ' · não visível nesta vista' : ''}</small></span><span className="chev">{isOpen ? '−' : '+'}</span>
           </button>
-          {isOpen && <div className="options">{g.products.map(p => <button key={p.id} className="option" aria-pressed={baseId(sel) === p.id}
+          {isOpen && <div className="options">{opts.map(p => <button key={p.id} className="option" aria-pressed={baseId(sel) === p.id}
               onMouseEnter={() => setFocus(p.id)} onMouseLeave={() => setFocus(null)} onClick={() => choose(g.part, p.id)}>
               {p.thumb ? <img src={p.thumb} alt="" loading="lazy"/> : <span className="noimg"/>}<span><b>{p.title}</b><small>{p.brand}{p.color ? ` · ${p.color}` : ''}</small></span></button>)}
             {g.products.some(p => p.id === 'paint-custom') && <label className="picker">Cor à escolha<input type="color" value={customHex(sel) || '#d9d2c5'} onChange={e => choose(g.part, 'paint-custom#' + e.target.value.slice(1), true)}/></label>}
