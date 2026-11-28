@@ -79,5 +79,35 @@
         }
       }
     }
+  },
+  "sotao_chegada": {
+    "images": [
+      "/pano/variants/sotao_chegada/1.webp",
+      "/pano/variants/sotao_chegada/2.webp"
+    ],
+    "parts": {
+      "floor-dry": {
+        "base": "junia-nat340",
+        "renders": {
+          "floor-lagos": 1,
+          "floor-okera": 2
+        }
+      }
+    }
+  },
+  "sotao_bilhar": {
+    "images": [
+      "/pano/variants/sotao_bilhar/1.webp",
+      "/pano/variants/sotao_bilhar/2.webp"
+    ],
+    "parts": {
+      "floor-dry": {
+        "base": "junia-nat340",
+        "renders": {
+          "floor-lagos": 1,
+          "floor-okera": 2
+        }
+      }
+    }
   }
 }
