@@ -49,5 +49,35 @@
         }
       }
     }
+  },
+  "sala_jantar": {
+    "images": [
+      "/pano/variants/sala_jantar/1.webp",
+      "/pano/variants/sala_jantar/2.webp"
+    ],
+    "parts": {
+      "floor-dry": {
+        "base": "junia-nat340",
+        "renders": {
+          "floor-lagos": 1,
+          "floor-okera": 2
+        }
+      }
+    }
+  },
+  "sala_jantar_posicao2": {
+    "images": [
+      "/pano/variants/sala_jantar_posicao2/1.webp",
+      "/pano/variants/sala_jantar_posicao2/2.webp"
+    ],
+    "parts": {
+      "floor-dry": {
+        "base": "junia-nat340",
+        "renders": {
+          "floor-lagos": 1,
+          "floor-okera": 2
+        }
+      }
+    }
   }
 }
