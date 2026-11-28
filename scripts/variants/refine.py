@@ -6,7 +6,8 @@ de=np.sqrt(((lb-lr)**2).sum(2));diff=(cv2.GaussianBlur(de,(5,5),0)>14).astype(np
 diff=cv2.morphologyEx(diff,cv2.MORPH_OPEN,np.ones((3,3),np.uint8))
 import os
 M={p:(cv2.imread(f'{D}/{p}.png',0)>127).astype(np.uint8) for p in parts}
-fixed=[q for q in ('wall-paint','skirting') if os.path.exists(f'{D}/{q}.png')]  # zonas que nunca mudam: não podem entrar na extensão
+import glob
+fixed=[q for q in ('wall-paint','skirting') if os.path.exists(f'{D}/{q}.png')]+[os.path.basename(x)[:-4] for x in glob.glob(f'{D}/keep-*.png')]  # zonas que nunca mudam: não podem entrar na extensão
 F={q:(cv2.imread(f'{D}/{q}.png',0)>127).astype(np.uint8) for q in fixed}
 # píxeis com a cor das paredes deste render (ex.: parede azul do render 1) nunca entram na extensão
 wallc=None
@@ -25,6 +26,8 @@ for p in parts:
     for q in fixed: others|=F[q]
     ext=cv2.dilate(M[p],np.ones((45,45),np.uint8))&diff&(1-others)
     m=(M[p]|ext).astype(np.uint8)
+    for q in fixed:
+        if q.startswith('keep-'): m&=(1-F[q])  # zonas protegidas (tapete, móveis) nunca mudam
     k,lab,st,_=cv2.connectedComponentsWithStats(m,8)  # tirar manchas soltas pequenas
     for i in range(1,k):
         if st[i,cv2.CC_STAT_AREA]<400: m[lab==i]=0

@@ -1,10 +1,53 @@
 {
   "suite": {
-    "images": ["/pano/variants/suite/1.webp", "/pano/variants/suite/2.webp"],
+    "images": [
+      "/pano/variants/suite/1.webp",
+      "/pano/variants/suite/2.webp"
+    ],
     "parts": {
-      "floor-dry": {"base": "junia-nat340", "renders": {"floor-lagos": 1, "floor-okera": 2}},
-      "interior-door": {"base": "porta-turim-carvalho", "renders": {"porta-holanda-branca": 1, "porta-viena-cinza": 2}},
-      "wardrobe": {"base": "v5-wardrobe-parisot", "renders": {"wardrobe-classic": 1, "v5-wardrobe-nymeria": 2}}
+      "floor-dry": {
+        "base": "junia-nat340",
+        "renders": {
+          "floor-lagos": 1,
+          "floor-okera": 2
+        }
+      },
+      "interior-door": {
+        "base": "porta-turim-carvalho",
+        "renders": {
+          "porta-holanda-branca": 1,
+          "porta-viena-cinza": 2
+        }
+      },
+      "wardrobe": {
+        "base": "v5-wardrobe-parisot",
+        "renders": {
+          "wardrobe-classic": 1,
+          "v5-wardrobe-nymeria": 2
+        }
+      }
+    }
+  },
+  "sala": {
+    "images": [
+      "/pano/variants/sala/1.webp",
+      "/pano/variants/sala/2.webp"
+    ],
+    "parts": {
+      "floor-dry": {
+        "base": "junia-nat340",
+        "renders": {
+          "floor-lagos": 1,
+          "floor-okera": 2
+        }
+      },
+      "interior-door": {
+        "base": "porta-turim-carvalho",
+        "renders": {
+          "porta-holanda-branca": 1,
+          "porta-viena-cinza": 2
+        }
+      }
     }
   }
 }
